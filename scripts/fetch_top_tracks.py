@@ -12,8 +12,8 @@ def main() -> None:
     print("Fetching top tracks")
     tracks = client.get_current_user_top_tracks(limit=50, time_range="long_term")
 
-    # Change this to the language you are learning, for example "es" for Spanish.
-    target_language = "es"
+    # Change this to the language you are learning, for example "ru" for Russian.
+    target_language = "ru"
 
     print(f"Filtering tracks for language {target_language}")
     filtered = filter_tracks_by_language(tracks, target_language)
