@@ -23,3 +23,16 @@ def get_spotify_config() -> SpotifyConfig:
     if not token:
         raise RuntimeError("SPOTIFY_ACCESS_TOKEN is not set. Check your .env or environment.")
     return SpotifyConfig(access_token=token)
+
+
+@dataclass
+class GeniusConfig:
+    access_token: str
+    base_url: str = "https://api.genius.com"
+
+
+def get_genius_config() -> GeniusConfig:
+    token = os.getenv("GENIUS_ACCESS_TOKEN")
+    if not token:
+        raise RuntimeError("GENIUS_ACCESS_TOKEN is not set. Check your .env or environment.")
+    return GeniusConfig(access_token=token)

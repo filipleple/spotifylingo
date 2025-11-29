@@ -7,5 +7,6 @@ Description-Content-Type: text/markdown
 Requires-Dist: requests>=2.31.0
 Requires-Dist: python-dotenv>=1.0.0
 Requires-Dist: langdetect>=1.0.9
+Requires-Dist: beautifulsoup4>=4.4.0
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"

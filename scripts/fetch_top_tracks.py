@@ -3,10 +3,12 @@
 import argparse
 
 from spotify_vocab.config import get_spotify_config
+from spotify_vocab.config import get_genius_config
 from spotify_vocab.spotify_client import SpotifyClient
 from spotify_vocab.track_selection import get_candidate_tracks_for_language
 from spotify_vocab.lyrics_fetcher import fetch_lyrics_for_tracks
 from spotify_vocab.lyrics_provider_dummy import DummyLyricsProvider
+from spotify_vocab.lyrics_provider_genius import GeniusProvider
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,9 +60,20 @@ def main() -> None:
 
     provider = DummyLyricsProvider()
 
-    if (args.print_lyrics):
-        print(fetch_lyrics_for_tracks(provider, candidates))
+    if args.print_lyrics:
+        genius_config = get_genius_config()
+        provider = GeniusProvider(config=genius_config)
+        results = fetch_lyrics_for_tracks(provider, candidates)
 
+        print()
+        print(f"Tracks with lyrics: {len(results)}")
+        for track, lyrics in results:
+            print("===")
+            print(track.display_name)
+            # Only print a short preview to avoid flooding
+            preview_lines = lyrics.splitlines()[:5]
+            print("\n".join(preview_lines))
+            print("[...]")
 
 if __name__ == "__main__":
     main()
