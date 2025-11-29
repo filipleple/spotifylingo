@@ -1,0 +1,126 @@
+@startuml
+
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+
+package "scripts" {
+  class FetchTopTracksScript {
+    +main()
+  }
+}
+
+package "spotify_vocab" {
+  package "config" {
+    class SpotifyConfig {
+      +access_token: str
+      +default_time_range: TimeRange
+      +default_limit: int
+    }
+
+    class GeniusConfig {
+      +access_token: str
+      +base_url: str
+    }
+
+    class ConfigModule {
+      +get_spotify_config(): SpotifyConfig
+      +get_genius_config(): GeniusConfig
+    }
+  }
+
+  package "models" {
+    class Artist {
+      +id: str
+      +name: str
+    }
+
+    class Track {
+      +id: str
+      +name: str
+      +artists: List<Artist>
+      +uri: str
+      +href: str
+      +preview_url: Optional[str]
+      +display_name(): str
+    }
+  }
+
+  package "spotify_client" {
+    class SpotifyApiError
+
+    class SpotifyClient {
+      -config: SpotifyConfig
+      +get_current_user_top_tracks(limit: int, time_range: TimeRange): List<Track>
+    }
+  }
+
+  package "language_filter" {
+    class LanguageFilterModule {
+      +detect_track_language(track: Track): Optional[str]
+      +filter_tracks_by_language(tracks: Iterable<Track>, target_language: str): List<Track>
+    }
+  }
+
+  package "track_selection" {
+    class TrackSelectionModule {
+      +get_candidate_tracks_for_language(
+        client: SpotifyClient,
+        target_language: str,
+        limit: int,
+        time_range: TimeRange
+      ): List<Track>
+    }
+  }
+
+  package "lyrics" {
+    interface LyricsProvider {
+      +name: str
+      +get_lyrics_for_track(track: Track): Optional[str>
+    }
+
+    class LyricsProviderError
+
+    class GeniusProvider {
+      -config: GeniusConfig
+      +name: str
+      +get_lyrics_for_track(track: Track): Optional[str>
+      -_search(query: str): List<Dict]
+      -_select_best_hit(hits, track: Track)
+      -_scrape_lyrics_from_page(url: str): Optional[str>
+    }
+
+    class LyricsFetcherModule {
+      +fetch_lyrics_for_tracks(
+        provider: LyricsProvider,
+        tracks: Iterable<Track>
+      ): List<(Track, str)>
+    }
+  }
+}
+
+' relationships inside spotify_vocab
+SpotifyClient --> SpotifyConfig
+SpotifyClient --> Track
+Track "1" o-- "*" Artist
+
+TrackSelectionModule --> SpotifyClient
+TrackSelectionModule --> LanguageFilterModule
+LanguageFilterModule --> Track
+
+GeniusProvider ..|> LyricsProvider
+GeniusProvider --> GeniusConfig
+
+LyricsFetcherModule --> LyricsProvider
+LyricsFetcherModule --> Track
+
+ConfigModule --> SpotifyConfig
+ConfigModule --> GeniusConfig
+
+' script wiring
+FetchTopTracksScript --> ConfigModule : get_spotify_config()\nget_genius_config()
+FetchTopTracksScript --> SpotifyClient
+FetchTopTracksScript --> TrackSelectionModule
+FetchTopTracksScript --> GeniusProvider
+FetchTopTracksScript --> LyricsFetcherModule
+
+@enduml

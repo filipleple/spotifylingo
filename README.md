@@ -443,3 +443,5 @@ Mental map of layers:
   * `spotify_client`, `lyrics_provider_genius`, future translation providers.
   * Database modules: `db`, `db_models`, `lyrics_repository`.
   * Configuration: `config`.
+
+![Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/filipleple/spotifylingo/refs/heads/master/diagram.puml)
