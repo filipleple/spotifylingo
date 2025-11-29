@@ -445,3 +445,9 @@ Mental map of layers:
   * Configuration: `config`.
 
 ![Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/filipleple/spotifylingo/refs/heads/master/diagram.puml)
+
+
+## License
+
+This project is licensed under the MIT License.  
+See the `LICENSE` file for details.
