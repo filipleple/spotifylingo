@@ -5,6 +5,8 @@ import argparse
 from spotify_vocab.config import get_spotify_config
 from spotify_vocab.spotify_client import SpotifyClient
 from spotify_vocab.track_selection import get_candidate_tracks_for_language
+from spotify_vocab.lyrics_fetcher import fetch_lyrics_for_tracks
+from spotify_vocab.lyrics_provider_dummy import DummyLyricsProvider
 
 
 def parse_args() -> argparse.Namespace:
@@ -28,6 +30,11 @@ def parse_args() -> argparse.Namespace:
         default="long_term",
         help="Spotify time range for top tracks",
     )
+    parser.add_argument(
+        "--print-lyrics",
+        action="store_true",
+        help="Fetch and print the lyrics?",
+    )
     return parser.parse_args()
 
 
@@ -48,6 +55,11 @@ def main() -> None:
     print()
     for track in candidates:
         print(track.display_name)
+
+    provider = DummyLyricsProvider()
+
+    if (args.print_lyrics):
+        print(fetch_lyrics_for_tracks(provider, candidates))
 
 
 if __name__ == "__main__":
