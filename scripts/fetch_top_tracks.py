@@ -1,27 +1,52 @@
 #!/usr/bin/env python
 
+import argparse
+
 from spotify_vocab.config import get_spotify_config
 from spotify_vocab.spotify_client import SpotifyClient
-from spotify_vocab.language_filter import filter_tracks_by_language
+from spotify_vocab.track_selection import get_candidate_tracks_for_language
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Fetch top tracks and filter by language"
+    )
+    parser.add_argument(
+        "--lang",
+        required=True,
+        help="Target language code for filtering tracks, for example en, es, ru",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=50,
+        help="Number of top tracks to fetch from Spotify",
+    )
+    parser.add_argument(
+        "--time-range",
+        choices=["short_term", "medium_term", "long_term"],
+        default="long_term",
+        help="Spotify time range for top tracks",
+    )
+    return parser.parse_args()
 
 
 def main() -> None:
+    args = parse_args()
     config = get_spotify_config()
     client = SpotifyClient(config)
 
-    print("Fetching top tracks")
-    tracks = client.get_current_user_top_tracks(limit=50, time_range="long_term")
+    print(f"Fetching top tracks, limit={args.limit}, time_range={args.time_range}")
+    candidates = get_candidate_tracks_for_language(
+        client=client,
+        target_language=args.lang,
+        limit=args.limit,
+        time_range=args.time_range,
+    )
 
-    # Change this to the language you are learning, for example "ru" for Russian.
-    target_language = "ru"
-
-    print(f"Filtering tracks for language {target_language}")
-    filtered = filter_tracks_by_language(tracks, target_language)
-
-    print(f"Total tracks fetched: {len(tracks)}")
-    print(f"Tracks matching {target_language}: {len(filtered)}")
+    print(f"Tracks matching {args.lang}: {len(candidates)}")
     print()
-    for track in filtered:
+    for track in candidates:
         print(track.display_name)
 
 

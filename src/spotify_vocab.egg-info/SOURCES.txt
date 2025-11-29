@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+src/spotify_vocab/__init__.py
+src/spotify_vocab/config.py
+src/spotify_vocab/language_filter.py
+src/spotify_vocab/models.py
+src/spotify_vocab/spotify_client.py
+src/spotify_vocab.egg-info/PKG-INFO
+src/spotify_vocab.egg-info/SOURCES.txt
+src/spotify_vocab.egg-info/dependency_links.txt
+src/spotify_vocab.egg-info/requires.txt
+src/spotify_vocab.egg-info/top_level.txt
